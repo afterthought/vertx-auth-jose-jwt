@@ -1,0 +1,87 @@
+buildscript {
+    repositories {
+        maven {
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+            url 'https://nexus.cyberphysicalsystems.io/content/groups/public' }
+    }
+  
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply from: "gradle/maven.gradle"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+if (!JavaVersion.current().java8Compatible) {
+    throw new IllegalStateException('''A Haiku:
+                                      |  This needs Java 8,
+                                      |  You are using something else,
+                                      |  Refresh. Try again.'''.stripMargin())
+}
+
+repositories {
+    maven {
+        credentials {
+            username sonatypeUsername
+            password sonatypePassword
+        }
+        url 'https://nexus.cyberphysicalsystems.io/content/groups/public/' }
+}
+
+dependencies {
+    compile "io.vertx:vertx-core:$vertxVersion"
+    compile "io.vertx:vertx-auth-common:$vertxVersion"
+    compile "org.bitbucket.b_c:jose4j:0.4.1"
+    compile "org.apache.commons:commons-lang3:3.1"
+    testCompile "io.vertx:vertx-unit:$vertxVersion"
+    testCompile 'junit:junit:4.12'
+    testCompile "io.vertx:vertx-web:$vertxVersion"
+}
+
+group = owner
+
+
+
+def configurePom(def pom) {
+    pom.project {
+        name rootProject.name
+        description 'Alternative JWT auth provider for vertx'
+        inceptionYear '2015'
+        packaging 'jar'
+
+        url 'https://github.com/cyberphysical/vertx-auth-jose-jwt'
+
+        developers {
+            developer {
+                id 'afterthought'
+                name 'Chuck Swanberg'
+                email 'cswanberg@mad-swan.com'
+            }
+        }
+
+        scm {
+            url 'git@github.com:cyberphysical/vertx-auth-jose-jwt.git'
+        }
+
+        licenses {
+            license {
+                name 'The name of the license used, e.g.: The Apache Software License, Version 2.0'
+                url 'URl to the license, e.g.: http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        properties {
+            setProperty('project.build.sourceEncoding', 'UTF8')
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
