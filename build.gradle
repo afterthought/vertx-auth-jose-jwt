@@ -1,17 +1,14 @@
 buildscript {
-    repositories {
-        maven {
-            credentials {
-                username sonatypeUsername
-                password sonatypePassword
-            }
-            url 'https://nexus.cyberphysicalsystems.io/content/groups/public' }
+    repositories {  jcenter() }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
     }
   
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'com.jfrog.bintray'
 apply from: "gradle/maven.gradle"
 
 sourceCompatibility = 1.8
@@ -24,13 +21,29 @@ if (!JavaVersion.current().java8Compatible) {
                                       |  Refresh. Try again.'''.stripMargin())
 }
 
+if (!hasProperty('bintrayUser')) {
+    ext.bintrayUser = ''
+}
+if (!hasProperty('bintrayKey')) {
+    ext.bintrayKey = ''
+}
+
+
+bintray {   
+    user = bintrayUser
+    key = bintrayKey
+    pkg {
+        repo = 'Jars'
+        name = 'vertx-auth-jose-jwt'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/afterthought/vertx-auth-jose-jwt'
+    }
+    configurations = ['archives']
+}
+
+
 repositories {
-    maven {
-        credentials {
-            username sonatypeUsername
-            password sonatypePassword
-        }
-        url 'https://nexus.cyberphysicalsystems.io/content/groups/public/' }
+     jcenter()
 }
 
 dependencies {
